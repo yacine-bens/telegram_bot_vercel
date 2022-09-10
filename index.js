@@ -22,7 +22,7 @@ const init = async () => {
 app.post(URI, async (req, res) => {
     console.log(req.body);
 
-    if(!req.body.message || !req.body.message.text) res.send();
+    if(!req.body.message || !req.body.message.text) return res.send();
 
     const chatId = req.body.message.chat.id;
     const text = req.body.message.text;
