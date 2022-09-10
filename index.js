@@ -18,14 +18,15 @@ const init = async () => {
 }
 
 app.post(URI, async (req, res) => {
-    console.log(req.body, "Hello from logs");
+    // console.log(req.body, "Hello from logs");
     // console.log({"Token": TOKEN, "Url": SERVER_URL})
     // console.log("Hello from logs");
 
     const chatId = req.body.message.chat.id;
     const text = req.body.message.text;
 
-    const message = `Your message contains ${wordCount(text)} words.`;
+    // const message = `Your message contains ${wordCount(text)} words.`;
+    const message = `Token: ${TOKEN}\nServer URL: ${SERVER_URL}`;
     
     await axios.post(`${TELEGRAM_API}/sendMessage`, {
         chat_id: chatId,
