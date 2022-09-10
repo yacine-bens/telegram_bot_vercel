@@ -8,6 +8,8 @@ const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 const URI = `/webhook/${TOKEN}`;
 const WEBHOOK_URL = SERVER_URL + URI;
 
+console.log(process.env);
+
 const app = express();
 app.use(bodyParser.json());
 
@@ -20,7 +22,7 @@ const init = async () => {
 app.post(URI, async (req, res) => {
     console.log(req.body);
     // console.log({"Token": TOKEN, "Url": SERVER_URL})
-    console.log("Hello from logs", TOKEN, SERVER_URL);
+    console.log("Hello from logs");
 
     const chatId = req.body.message.chat.id;
     const text = req.body.message.text;
