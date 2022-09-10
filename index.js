@@ -22,11 +22,13 @@ const init = async () => {
 app.post(URI, async (req, res) => {
     console.log(req.body);
 
+    if(!req.body.message || !req.body.message.text) res.send();
+
     const chatId = req.body.message.chat.id;
     const text = req.body.message.text;
 
     // First message (Starting bot)
-    // if(text == '/start') return res.status(200).send();
+    if(text == '/start') return res.send();
 
     const message = `Your message contains ${wordCount(text)} words.`;
     
