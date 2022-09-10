@@ -5,7 +5,7 @@ const axios = require('axios');
 
 const TOKEN = process.env.TOKEN;
 // VERCEL_URL : prefixed by Vercel
-const SERVER_URL = `https://${peocess.env.VERCEL_URL}`;
+const SERVER_URL = `https://${process.env.VERCEL_URL}`;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 const URI = `/webhook/${TOKEN}`;
 const WEBHOOK_URL = SERVER_URL + URI;
