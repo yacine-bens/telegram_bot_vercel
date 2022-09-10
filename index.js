@@ -25,6 +25,9 @@ app.post(URI, async (req, res) => {
     const chatId = req.body.message.chat.id;
     const text = req.body.message.text;
 
+    // First message (Starting bot)
+    if(text == '/start') return res.send();
+
     const message = `Your message contains ${wordCount(text)} words.`;
     
     await axios.post(`${TELEGRAM_API}/sendMessage`, {
