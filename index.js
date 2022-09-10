@@ -26,7 +26,7 @@ app.post(URI, async (req, res) => {
     const text = req.body.message.text;
 
     // First message (Starting bot)
-    if(text == '/start') return res.send();
+    if(text == '/start') return res.status(200).send();
 
     const message = `Your message contains ${wordCount(text)} words.`;
     
