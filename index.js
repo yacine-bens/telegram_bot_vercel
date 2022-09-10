@@ -19,7 +19,8 @@ const init = async () => {
 
 app.post(URI, async (req, res) => {
     console.log(req.body);
-    console.log({"Token": TOKEN, "Url": SERVER_URL})
+    // console.log({"Token": TOKEN, "Url": SERVER_URL})
+    console.log("Hello from logs", TOKEN, SERVER_URL);
 
     const chatId = req.body.message.chat.id;
     const text = req.body.message.text;
