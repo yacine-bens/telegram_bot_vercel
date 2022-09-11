@@ -59,7 +59,7 @@ app.post(URI, async (req, res) => {
     // if (!chats[chatId]) chats[chatId] = "/chars";
 
     let result = await collection.findOne({ chat_id: chatId }, { projection: { _id: 0 } });
-    if (!Object.keys(result).length) {
+    if (!result) {
         await collection.insertOne({ chat_id: chatId, mode: "/chars" });
         currentMode = "/chars";
     }
