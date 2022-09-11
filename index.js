@@ -22,7 +22,7 @@ const init = async () => {
 // MongoDB
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const DB_URI = "mongodb+srv://vercel-admin-user:dKkJWnHudcEg8Q5c@cluster0.teexhmd.mongodb.net/test";
-const client = new MongoClient(DB_URI, {useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1});
+const client = new MongoClient(DB_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
 // client.connect(err=>{
@@ -40,7 +40,10 @@ app.post(URI, async (req, res) => {
     console.log(req.body);
 
     let db = await client.connect();
-    console.log(db);
+    let collection = db.db('test').collection('chats');
+    let results = collection.find().toArray();
+
+    console.log(results);
 
     // Update is not a message
     if (!req.body.message || !req.body.message.text) return res.send();
