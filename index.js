@@ -41,7 +41,7 @@ app.post(URI, async (req, res) => {
 
     let db = await client.connect();
     let collection = db.db('test').collection('chats');
-    let results = await collection.find().toArray();
+    let results = await collection.find({}, {"_id":0}).toArray();
 
     console.log(results);
 
