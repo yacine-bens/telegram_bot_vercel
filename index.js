@@ -19,6 +19,18 @@ const init = async () => {
     console.log(res.data);
 }
 
+// MongoDB
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const DB_URI = "mongodb+srv://vercel-admin-user:dKkJWnHudcEg8Q5c@cluster0.teexhmd.mongodb.net/test";
+const client = new MongoClient(DB_URI, {useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1});
+
+
+// client.connect(err=>{
+//     const collection = client.db("test").collection("chats");
+//     // perform actions on the collection object
+//     client.close();
+// })
+
 // Last bot_command
 // {chat_id1: "last_bot_cmd", chat_id2: "last_bot_cmd"}
 let chats = {};
@@ -26,6 +38,9 @@ let chats = {};
 // Receive messages
 app.post(URI, async (req, res) => {
     console.log(req.body);
+
+    let db = await client.connect();
+    console.log(db);
 
     // Update is not a message
     if (!req.body.message || !req.body.message.text) return res.send();
