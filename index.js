@@ -27,8 +27,8 @@ app.post(URI, async (req, res) => {
     const chatId = req.body.message.chat.id;
     const text = req.body.message.text;
 
-    // First message (Starting bot)
-    if(text == '/start') return res.send();
+    // Ignore commands (/start, /command1 ...)
+    if(text.startsWith('/')) return res.send();
 
     const message = `Your message contains ${wordCount(text)} words.`;
     
