@@ -23,12 +23,16 @@ app.post(URI, async (req, res) => {
     console.log(req.body);
 
     if(!req.body.message || !req.body.message.text) return res.send();
-
+    
     const chatId = req.body.message.chat.id;
     const text = req.body.message.text;
 
     // Ignore commands (/start, /command1 ...)
-    if(text.startsWith('/')) return res.send();
+    if(text.startsWith('/') && req.body.message.entities){
+        for(let entity of req.body.message.entities){
+            if(entity.type === "bot_command") return res.send();
+        }
+    }
 
     const message = `Your message contains ${wordCount(text)} words.`;
     
