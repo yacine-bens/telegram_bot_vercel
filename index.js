@@ -34,19 +34,23 @@ app.post(URI, async (req, res) => {
     const text = req.body.message.text;
 
     // Default mode (first time)
-    if(!chats[chatId]) chats[chatId] = "/chars";
-    
+    if (!chats[chatId]) chats[chatId] = "/chars";
+
     let response_message = "";
 
     // Check for bot commands
     if (isBotCommand(req.body.message)) {
-        chats[chatId] = text;
-        response_message = "Please send some text."
+        if (text === '/mode') {
+            let mode = (chats[chatId] === "/chars") ? "characters count" : "words count";
+            response_message = `Current mode is ${mode}`;
+        }
+        else {
+            chats[chatId] = text;
+            response_message = "Please send some text."
+        }
     }
     else {
-        let count;
-        if(chats[chatId] === "/chars") count = charCount(text) + " characters";
-        if(chats[chatId] === "/words") count = wordCount(text) + " words.";
+        let count = chats[chatId] === "/chars" ? `${charCount(text)} characters.` : `${wordCount(text)} words.`;
         response_message = `Your message contains ${count}`;
     }
 
