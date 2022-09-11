@@ -19,28 +19,45 @@ const init = async () => {
     console.log(res.data);
 }
 
+// Last bot_command
+// {chat_id1: "last_bot_cmd", chat_id2: "last_bot_cmd"}
+let chats = {};
+
+// Receive messages
 app.post(URI, async (req, res) => {
     console.log(req.body);
 
-    if(!req.body.message || !req.body.message.text) return res.send();
-    
+    // Update is not a message
+    if (!req.body.message || !req.body.message.text) return res.send();
+
     const chatId = req.body.message.chat.id;
     const text = req.body.message.text;
 
-    // Ignore commands (/start, /command1 ...)
-    if(text.startsWith('/') && req.body.message.entities){
-        for(let entity of req.body.message.entities){
-            if(entity.type === "bot_command") return res.send();
-        }
+    // Default mode (first time)
+    if(!chats[chatId]) chats[chatId] = "/chars";
+    
+    let response_message = "";
+
+    // Check for bot commands
+    if (isBotCommand(req.body.message)) {
+        chats[chatId] = text;
+        response_message = "Please send some text."
+    }
+    else {
+        let count;
+        if(chats[chatId] === "/chars") count = charCount(text) + " characters";
+        if(chats[chatId] === "/words") count = wordCount(text) + " words.";
+        response_message = `Your message contains ${count}`;
     }
 
-    const message = `Your message contains ${wordCount(text)} words.`;
-    
+
+    // Respond to user
     await axios.post(`${TELEGRAM_API}/sendMessage`, {
         chat_id: chatId,
-        text: message
+        text: response_message
     })
-    
+
+    // Respond to Telegram server
     return res.send();
 })
 
@@ -49,6 +66,18 @@ app.listen(process.env.PORT || 5000, async () => {
     await init();
 })
 
-function wordCount(str){
+function wordCount(str) {
     return str.split(' ').filter(l => l != '').length;
+}
+
+function charCount(str) {
+    return str.replaceAll(' ', '').length;
+}
+
+function isBotCommand(msg) {
+    if (msg.text.startsWith('/') && msg.entities) {
+        for (let entity of msg.entities) {
+            return entity.type === "bot_command";
+        }
+    }
 }
