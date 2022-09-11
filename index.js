@@ -33,7 +33,7 @@ const client = new MongoClient(DB_URI, { useNewUrlParser: true, useUnifiedTopolo
 
 // Last bot_command
 // {chat_id1: "last_bot_cmd", chat_id2: "last_bot_cmd"}
-let chats = {};
+// let chats = {};
 
 // Receive messages
 app.post(URI, async (req, res) => {
@@ -41,10 +41,10 @@ app.post(URI, async (req, res) => {
 
     let db = await client.connect();
     let collection = db.db('test').collection('chats');
-    let results = await collection.find({}, { projection: { _id: 0 } }).toArray();
+    // let results = await collection.find({}, { projection: { _id: 0 } }).toArray();
     // let results = await collection.find().project({_id:0}).toArray();
 
-    console.log(results);
+    // console.log(results);
 
     // Update is not a message
     if (!req.body.message || !req.body.message.text) return res.send();
@@ -52,8 +52,20 @@ app.post(URI, async (req, res) => {
     const chatId = req.body.message.chat.id;
     const text = req.body.message.text;
 
+    let currentMode;
+
+
     // Default mode (first time)
-    if (!chats[chatId]) chats[chatId] = "/chars";
+    // if (!chats[chatId]) chats[chatId] = "/chars";
+
+    let result = await collection.findOne({ chat_id: chatId }, { projection: { _id: 0 } }).toArray();
+    if (!result.length) {
+        await collection.insertOne({ chat_id: chatId, mode: "/chars" });
+        currentMode = "/chars";
+    }
+    else {
+        currentMode = result[0].mode;
+    }
 
     let response_message = "";
 
@@ -61,16 +73,19 @@ app.post(URI, async (req, res) => {
     if (isBotCommand(req.body.message)) {
         if (text === '/start') return res.send();
         if (text === '/mode') {
-            let mode = (chats[chatId] === "/chars") ? "characters count" : "words count";
+            let mode = (currentMode === "/chars") ? "characters count" : "words count";
             response_message = `Current mode is ${mode}`;
         }
         else {
-            chats[chatId] = text;
+            if (currentMode != text) {
+                await collection.updateOne({ chat_id: chatId }, { $set: { mode: text } });
+            }
+            // chats[chatId] = text;
             response_message = "Please send some text."
         }
     }
     else {
-        let count = chats[chatId] === "/chars" ? `${charCount(text)} characters.` : `${wordCount(text)} words.`;
+        let count = currentMode === "/chars" ? `${charCount(text)} characters.` : `${wordCount(text)} words.`;
         response_message = `Your message contains ${count}`;
     }
 
