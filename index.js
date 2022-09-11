@@ -39,7 +39,7 @@ app.post(URI, async (req, res) => {
     let response_message = "";
 
     // Check for bot commands
-    if (isBotCommand(req.body.message)) {
+    if (isBotCommand(req.body.message && text != "/start")) {
         if (text === '/mode') {
             let mode = (chats[chatId] === "/chars") ? "characters count" : "words count";
             response_message = `Current mode is ${mode}`;
